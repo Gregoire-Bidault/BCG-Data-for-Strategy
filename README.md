@@ -64,7 +64,7 @@ jupyter notebook
 
 ---
 
-## Project Structure
+## Project Structure (WIP)
 
 ```
 BCG-Data-for-Strategy/
@@ -72,14 +72,15 @@ BCG-Data-for-Strategy/
 ├── data/
 │   ├── raw/                 # Original, untouched datasets
 │   │   ├── climate/         # Raw climate data (temperature, precipitation, …)
-│   │   └── yields/          # Raw crop yield data (Agreste / open data)
-│   └── processed/           # Cleaned & feature-engineered datasets
+│   │   └── yields/          # Raw barley yield data
+│   └── processed/           # Bronze & Silver datasets
 │
 ├── notebooks/               # Jupyter notebooks for EDA & prototyping
 │
 ├── src/                     # Modular Python source code
 │   ├── __init__.py
-│   ├── feature_engineering.py   # Drought metrics, rolling averages, …
+│   ├── bronze_to_silver.py
+│   ├── silver_to_gold.py
 │   ├── model_training.py        # Model fitting & hyper-parameter tuning
 │   ├── validation.py            # Evaluation helpers (MAE, RMSE, …)
 │   └── streamlit/               # Streamlit dashboard
@@ -99,9 +100,9 @@ BCG-Data-for-Strategy/
 
 | Layer               | Tool / Library                      | Purpose                                                       |
 |---------------------|-------------------------------------|---------------------------------------------------------------|
-| Data processing     | **Polars**, **Pandas**, **Seaborn**             | Fast ingestion & feature engineering |
+| Data processing     | **Pandas**           | Fast ingestion & feature engineering |
 | Modeling            | **XGBoost**, **Scikit-learn**                                 |                                                                |
-| Visualisation       | **Matplotlib**, **Plotly**          | Static & interactive charts for EDA and reporting              |
+| Visualisation       | **Matplotlib**, **Seaborn**         | Static & interactive charts for EDA and reporting              |
 | Dashboard           | **Streamlit**                       | Interactive web app for exploring data & model results         |
 | Notebooks           | **Jupyter** (ipykernel)             | Exploratory data analysis & rapid prototyping                  |
 
