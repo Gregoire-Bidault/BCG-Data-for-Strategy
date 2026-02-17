@@ -47,7 +47,6 @@ By integrating climate signals (temperature anomalies, precipitation patterns, d
 ```bash
 # 1. Clone the repository
 git clone https://github.com/Gregoire-Bidault/BCG-Data-for-Strategy.git
-cd BCG-Data-for-Strategy
 
 # 2. Create & activate a virtual environment
 python -m venv .venv
@@ -86,8 +85,6 @@ BCG-Data-for-Strategy/
 │   └── streamlit/               # Streamlit dashboard
 │       ├── app.py               # Main entrypoint
 │       └── pages/               # Multi-page app views
-│           ├── 1_📊_EDA.py
-│           └── 2_🤖_Model_Results.py
 │
 ├── models/                  # Serialised trained models (.pkl / .joblib)
 │
@@ -102,8 +99,8 @@ BCG-Data-for-Strategy/
 
 | Layer               | Tool / Library                      | Purpose                                                       |
 |---------------------|-------------------------------------|---------------------------------------------------------------|
-| Data processing     | **Polars**, **Pandas**              | Fast ingestion & feature engineering (e.g. annual drought metrics from daily data) |
-| Modeling            |                                     |                                                                |
+| Data processing     | **Polars**, **Pandas**, **Seaborn**             | Fast ingestion & feature engineering |
+| Modeling            | **XGBoost**, **Scikit-learn**                                 |                                                                |
 | Visualisation       | **Matplotlib**, **Plotly**          | Static & interactive charts for EDA and reporting              |
 | Dashboard           | **Streamlit**                       | Interactive web app for exploring data & model results         |
 | Notebooks           | **Jupyter** (ipykernel)             | Exploratory data analysis & rapid prototyping                  |
@@ -133,4 +130,5 @@ Model performance is evaluated with yield-forecasting-specific metrics:
 
 ## Authors
 
-BCG X — Data for Strategy Team
+BCG X — Data for Strategy Team :  
+Grégoire Bidault (github : Gregoire-Bidault), Anna Silvia Saffirio, Alice Singh, Nandana Sreeraj (github : nandanasreeraj123), Hannah Hassoune-de Maximy​
