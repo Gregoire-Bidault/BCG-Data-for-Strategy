@@ -3,9 +3,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-from constants.path import CLIMATE_PATH, BARLEY_PATH
-
-climate_df = pd.read_parquet(CLIMATE_PATH)
+from constants.path import (
+    CLIMATE_PATH,
+    BARLEY_PATH,
+    SILVER_PATH,
+    GOLD_PATH,
+)
+from constants.constants import CLIMATE_COLUMNS, DEPARTMENT_COLUMNS
 
 def bronze_to_silver_barley() -> pd.DataFrame:
     barley_df = pd.read_csv(BARLEY_PATH, sep=";")
@@ -32,3 +36,53 @@ def bronze_to_silver_barley() -> pd.DataFrame:
     barley_df = barley_df.drop_duplicates()
     return barley_df
 
+def bronze_to_silver_climate() -> pd.DataFrame:
+    df = pd.read_parquet(CLIMATE_PATH)
+
+    df_department = df[DEPARTMENT_COLUMNS].copy()
+    df_department = df_department.drop_duplicates()
+
+    mask_middle_scenario = (df["scenario"] == "historical") | (df["scenario"] == "ssp2_4_5")
+    mask_worst_scenario = (df["scenario"] == "historical") | (df["scenario"] == "ssp5_8_5")
+
+    df_middle_sc = df[mask_middle_scenario].copy()
+    df_worst_sc = df[mask_worst_scenario].copy()
+
+    df_middle_sc = df_middle_sc[CLIMATE_COLUMNS]
+    df_worst_sc = df_worst_sc[CLIMATE_COLUMNS]
+
+    df_middle_sc.loc[:, "time"] = pd.to_datetime(df_middle_sc["time"])
+    df_worst_sc.loc[:, "time"] = pd.to_datetime(df_worst_sc["time"])
+
+    df_middle_sc = (
+        df_middle_sc.pivot_table(
+            index=["code_dep", "time"],
+            columns="metric",
+            values="value",
+            aggfunc="mean"
+        )
+        .reset_index()
+    )
+    df_worst_sc = (
+        df_worst_sc.pivot_table(
+            index=["code_dep", "time"],
+            columns="metric",
+            values="value",
+            aggfunc="mean"
+        )
+        .reset_index()
+    )
+
+    df_middle_sc["precipitation"] = df_middle_sc["precipitation"] * 86400.0
+    df_worst_sc["precipitation"] = df_worst_sc["precipitation"] * 86400.0
+
+    return df_department, df_middle_sc, df_worst_sc
+
+if __name__ == "__main__":
+    barley_df = bronze_to_silver_barley()
+    barley_df.to_parquet(SILVER_PATH / "barley.parquet", index=False)
+
+    df_department, df_middle_sc, df_worst_sc = bronze_to_silver_climate()
+    df_department.to_parquet(GOLD_PATH / "department.parquet", index=False)
+    df_middle_sc.to_parquet(SILVER_PATH / "climate_middle.parquet", index=False)
+    df_worst_sc.to_parquet(SILVER_PATH / "climate_worst.parquet", index=False)
