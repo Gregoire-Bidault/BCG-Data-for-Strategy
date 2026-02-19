@@ -17,9 +17,11 @@ from constants.path import (
 from constants.constants import CLIMATE_COLUMNS, DEPARTMENT_COLUMNS
 
 def bronze_to_silver_barley() -> pd.DataFrame:
+    departments = pd.read_parquet(GOLD_PATH / "department.parquet")
     barley_df = pd.read_csv(BARLEY_PATH, sep=";")
 
-    barley_df.rename(columns={"Unnamed: 0":"code_dep"}, inplace=True)
+    barley_df = barley_df.merge(departments, how="left", left_on="department", right_on="nom_dep")
+    barley_df.drop(columns=["Unnamed: 0", "nom_dep"], inplace=True)
 
     barley_df["code_dep"] = barley_df["code_dep"].astype(str).str.strip()
     barley_df["department"] = barley_df["department"].astype(str).str.strip()
