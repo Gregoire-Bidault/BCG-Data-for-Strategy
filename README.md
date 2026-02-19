@@ -73,7 +73,7 @@ BCG-Data-for-Strategy/
 │   ├── raw/                 # Original, untouched datasets
 │   │   ├── climate/         # Raw climate data (temperature, precipitation, …)
 │   │   └── yields/          # Raw barley yield data
-│   └── processed/           # Bronze & Silver datasets
+│   └── processed/           # Silver & Gold datasets
 │
 ├── notebooks/               # Jupyter notebooks for EDA & prototyping
 │

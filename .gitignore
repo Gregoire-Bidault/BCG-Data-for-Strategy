@@ -33,3 +33,5 @@ data/processed/**/*.parquet
 # ── Models (serialised objects) ──────────────────────────
 models/*.pkl
 models/*.joblib
+
+*.png
