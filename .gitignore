@@ -28,6 +28,7 @@ Thumbs.db
 data/raw/**/*.csv
 data/raw/**/*.parquet
 data/raw/**/*.xlsx
+data/processed/**/*.parquet
 
 # ── Models (serialised objects) ──────────────────────────
 models/*.pkl
