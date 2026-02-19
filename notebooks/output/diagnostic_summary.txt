@@ -1,0 +1,41 @@
+========================================================================
+DIAGNOSTIC SUMMARY  –  2011 BARLEY YIELD COLLAPSE
+========================================================================
+
+1.  NATIONAL MEDIAN YIELD (t/ha)
+       2010:  5.85
+       2011:  5.36
+       2012:  6.05
+       Drop 2010→2011:  -8.4 %
+
+2.  TOP-10 MOST ABNORMAL FEATURES IN 2011
+        1. m6_precip_sum                                  Δ = +917.0 %
+        2. m6_heat_days                                   Δ = -100.0 %
+        3. m6_max_consec_heat                             Δ = -100.0 %
+        4. summer_total_precip                            Δ = +57.0 %
+        5. m5_gdd                                         Δ = -54.8 %
+        6. hot_dry_days                                   Δ = -52.6 %
+        7. heat_days                                      Δ = -52.6 %
+        8. m6_dry_days                                    Δ = -51.9 %
+        9. summer_max_consecutive_heat_days               Δ = -50.0 %
+       10. m8_max_consec_heat                             Δ = +50.0 %
+
+3.  HEAT vs DROUGHT BREAKDOWN (among top-10)
+       Heat-related features :  7  →  ['m6_heat_days', 'm6_max_consec_heat', 'm5_gdd', 'hot_dry_days', 'heat_days', 'summer_max_consecutive_heat_days', 'm8_max_consec_heat']
+       Drought-related feats :  4  →  ['m6_precip_sum', 'summer_total_precip', 'hot_dry_days', 'm6_dry_days']
+
+4.  STRONGEST YIELD CORRELATE (2010-2012)
+       precip_cv   r = -0.492
+
+5.  SPATIAL CONSISTENCY
+       Top feature: m6_precip_sum
+       Dept-level correlation with yield anomaly: r = -0.035, p = 7.44e-01
+       Significant at α=0.05?  NO – not significant
+
+6.  CONCLUSION
+       The 2011 yield collapse was driven by primarily HEAT STRESS,
+       concentrated during the summer window (Jun–Aug, grain fill).
+       Departments that experienced the most extreme m6_precip_sum
+       showed only weak spatial correlation with yield drops (r = -0.035).
+
+========================================================================
