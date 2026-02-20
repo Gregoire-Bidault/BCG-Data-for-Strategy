@@ -4,7 +4,7 @@ Climate-Adjusted Yield Resilience Dashboard
 Interactive Streamlit dashboard for barley yield analysis.
 
 Launch:
-    streamlit run app.py
+    .venv/bin/streamlit run app.py
 """
 
 import sys
@@ -18,8 +18,10 @@ import pickle
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
+import plotly.express as px
 from plotly.subplots import make_subplots
 import streamlit as st
+import requests
 
 from constants.path import GOLD_PATH
 from src.data.silver_to_gold import climate_features_year
@@ -157,6 +159,18 @@ def load_departments():
 def load_projections(scenario: str):
     """Load pre-computed projection features."""
     return pd.read_parquet(GOLD_PATH / f"projections_{scenario}.parquet")
+
+
+@st.cache_data(show_spinner=False)
+def load_france_geojson():
+    """Load GeoJSON of French departments."""
+    url = (
+        "https://france-geojson.gregoiredavid.fr/"
+        "repo/departements.geojson"
+    )
+    r = requests.get(url)
+    r.raise_for_status()
+    return r.json()
 
 
 @st.cache_resource(show_spinner=False)
@@ -462,7 +476,74 @@ if view == "Historical":
         gridcolor="rgba(0,0,0,0.03)",
     )
 
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
+
+    # ── France Choropleth Map ─────────────────────────────
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("### 🗺️ Yield Map by Department")
+
+    geojson = load_france_geojson()
+    years = sorted(gold_df["year"].unique())
+    map_year = st.slider(
+        "Select year",
+        min_value=int(years[0]),
+        max_value=int(years[-1]),
+        value=int(years[-1]),
+        step=1,
+        key="map_year_hist",
+    )
+
+    # Average yield per department for selected year
+    map_data = (
+        gold_df[gold_df["year"] == map_year]
+        .groupby("code_dep", as_index=False)["yield"]
+        .mean()
+    )
+    # Merge department names
+    map_data = map_data.merge(dept_df, on="code_dep", how="left")
+    map_data["nom_dep"] = (
+        map_data["nom_dep"].str.replace("_", " ")
+    )
+
+    fig_map = px.choropleth(
+        map_data,
+        geojson=geojson,
+        locations="code_dep",
+        featureidkey="properties.code",
+        color="yield",
+        color_continuous_scale=[
+            [0.0, "#fef3c7"],
+            [0.3, "#fbbf24"],
+            [0.5, "#84cc16"],
+            [0.7, "#22c55e"],
+            [1.0, "#047857"],
+        ],
+        hover_name="nom_dep",
+        hover_data={"yield": ":.2f", "code_dep": False},
+        labels={"yield": "Yield (t/ha)"},
+    )
+    fig_map.update_geos(
+        fitbounds="locations",
+        visible=False,
+    )
+    fig_map.update_layout(
+        margin=dict(l=0, r=0, t=30, b=0),
+        height=550,
+        title=dict(
+            text=f"Average Barley Yield — {map_year}",
+            font=dict(size=16, color="#0f172a"),
+            x=0.5,
+        ),
+        coloraxis_colorbar=dict(
+            title="t/ha",
+            thickness=15,
+            len=0.7,
+        ),
+        paper_bgcolor="rgba(0,0,0,0)",
+        geo=dict(bgcolor="rgba(0,0,0,0)"),
+    )
+
+    st.plotly_chart(fig_map, width="stretch")
 
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -569,7 +650,7 @@ elif view == "Projections":
     fig_proj.update_xaxes(gridcolor="rgba(0,0,0,0.05)", dtick=5)
     fig_proj.update_yaxes(gridcolor="rgba(0,0,0,0.05)")
 
-    st.plotly_chart(fig_proj, use_container_width=True)
+    st.plotly_chart(fig_proj, width="stretch")
 
     # ── Strategic Ranking ─────────────────────────────────
     st.markdown("### 🏆 Strategic Department Ranking")
@@ -692,7 +773,7 @@ elif view == "Projections":
         ),
     )
 
-    st.plotly_chart(fig_shap, use_container_width=True)
+    st.plotly_chart(fig_shap, width="stretch")
 
     # ── Top features within each group ────────────────────
     with st.expander("🔍 Top features per group"):

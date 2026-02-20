@@ -56,7 +56,7 @@ source .venv/bin/activate   # macOS / Linux
 pip install -r requirements.txt
 
 # 4. Launch the Streamlit dashboard
-streamlit run src/streamlit/app.py
+.venv/bin/streamlit run app.py
 
 # 5. Launch Jupyter (optional – for EDA notebooks)
 jupyter notebook
